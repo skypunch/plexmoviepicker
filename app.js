@@ -370,6 +370,7 @@ async function enterApp() {
   clearStatus();
   setLibraryInfo(state.movies.length);
   els.pickBtn.disabled = false;
+  await pickMovie(); // pick straight away — no need to press the button first
 }
 
 function setLibraryInfo(n) {
