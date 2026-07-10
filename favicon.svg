@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#e5a00d"/>
+  <g fill="#1a1300">
+    <!-- reels -->
+    <circle cx="21" cy="19" r="11"/>
+    <circle cx="43" cy="21" r="9"/>
+    <!-- body -->
+    <rect x="9" y="30" width="40" height="18" rx="4"/>
+    <!-- lens -->
+    <path d="M49 35h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7z"/>
+    <!-- legs -->
+    <path d="M18 48l-4 8h4l3-8zM36 48l4 8h-4l-3-8z"/>
+  </g>
+  <!-- reel hubs -->
+  <circle cx="21" cy="19" r="3.5" fill="#e5a00d"/>
+  <circle cx="43" cy="21" r="3" fill="#e5a00d"/>
+</svg>
