@@ -431,7 +431,7 @@ async function pickMovie() {
   }
 
   showMovie(winner, false);
-  els.pickBtn.textContent = 'Re-roll';
+  els.pickBtn.textContent = 'Pick another movie';
   els.pickBtn.disabled = false;
 }
 
