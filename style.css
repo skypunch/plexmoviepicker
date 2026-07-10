@@ -150,10 +150,23 @@ body {
   opacity: 0.4;
 }
 
-#movie-title {
+.title-box {
   font-size: 1.3rem;
-  margin: 0 0 6px;
   line-height: 1.3;
+  margin: 0 0 6px;
+  /* Always reserve three lines so wrapping titles can't shift the layout
+     while the shuffle cycles through movies. */
+  height: 3.9em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#movie-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 #movie-meta {
