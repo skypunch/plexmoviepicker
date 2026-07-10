@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' https://*.plex.direct:*; connect-src https://plex.tv https://*.plex.direct:*; base-uri 'none'; form-action 'none'">
+  <title>The Plex Movie Picker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="app">
+    <h1 class="app-title">The Plex Movie Picker</h1>
+
+    <p id="status" class="status" hidden></p>
+
+    <section id="signin-view" hidden>
+      <button id="signin-btn" class="big-btn">Sign in with Plex</button>
+    </section>
+
+    <section id="picker-view" hidden>
+      <div id="result" class="card" hidden>
+        <div class="poster-wrap">
+          <img id="poster" alt="Movie poster" hidden>
+          <div id="poster-placeholder" class="poster-placeholder" hidden>
+            <span>🎞️</span>
+          </div>
+        </div>
+        <h2 id="movie-title"></h2>
+        <p id="movie-meta"></p>
+      </div>
+
+      <button id="pick-btn" class="big-btn" disabled>Pick a film</button>
+
+      <p class="footer">
+        <span id="library-info"></span>
+        <a href="#" id="signout-link">Sign out</a>
+      </p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
