@@ -18,7 +18,7 @@ const LIBRARY_REFRESH_MS = 5 * 60 * 1000;
 const LIBRARY_REFRESH_MIN_AGE_MS = 60 * 1000;
 const SHUFFLE_FRAMES = 6;
 const SHUFFLE_FRAME_MS = 160;
-const MAX_SHORT_RUNTIME_MS = 110 * 60 * 1000;
+const MAX_SHORT_RUNTIME_MS = 100 * 60 * 1000;
 const NO_MATCH_MESSAGE = 'No movies match the current filters.';
 
 class AuthError extends Error {
@@ -64,7 +64,7 @@ const els = {
 };
 
 const filters = {
-  shortOnly: false, // 110 minutes and under
+  shortOnly: false, // 100 minutes and under
   comedyOnly: false,
 };
 
