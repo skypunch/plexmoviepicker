@@ -37,6 +37,26 @@
 
       <button id="pick-btn" class="big-btn" disabled>Pick a film</button>
 
+      <div class="filters">
+        <button id="filter-runtime" class="filter-btn" type="button"
+                title="110 minutes and under" aria-label="110 minutes and under"
+                aria-pressed="false">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 7v5l3.5 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button id="filter-comedy" class="filter-btn" type="button"
+                title="Only comedies" aria-label="Only comedies"
+                aria-pressed="false">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M7.6 9.4c.6-.9 1.9-.9 2.5 0M13.9 9.4c.6-.9 1.9-.9 2.5 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M7.5 13h9a4.5 4.5 0 0 1-9 0z" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+
       <p class="footer">
         <span id="library-info"></span>
         <a href="#" id="signout-link">Sign out</a>

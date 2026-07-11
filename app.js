@@ -18,6 +18,8 @@ const LIBRARY_REFRESH_MS = 5 * 60 * 1000;
 const LIBRARY_REFRESH_MIN_AGE_MS = 60 * 1000;
 const SHUFFLE_FRAMES = 6;
 const SHUFFLE_FRAME_MS = 160;
+const MAX_SHORT_RUNTIME_MS = 110 * 60 * 1000;
+const NO_MATCH_MESSAGE = 'No movies match the current filters.';
 
 class AuthError extends Error {
   constructor() {
@@ -55,9 +57,29 @@ const els = {
   movieTitle: document.getElementById('movie-title'),
   movieMeta: document.getElementById('movie-meta'),
   pickBtn: document.getElementById('pick-btn'),
+  filterRuntime: document.getElementById('filter-runtime'),
+  filterComedy: document.getElementById('filter-comedy'),
   libraryInfo: document.getElementById('library-info'),
   signoutLink: document.getElementById('signout-link'),
 };
+
+const filters = {
+  shortOnly: false, // 110 minutes and under
+  comedyOnly: false,
+};
+
+function filteredMovies() {
+  let list = state.movies || [];
+  if (filters.shortOnly) {
+    list = list.filter((m) => m.duration && m.duration <= MAX_SHORT_RUNTIME_MS);
+  }
+  if (filters.comedyOnly) {
+    list = list.filter((m) =>
+      (m.Genre || []).some((g) => String(g.tag).toLowerCase() === 'comedy')
+    );
+  }
+  return list;
+}
 
 /* ------------------------------- Utilities ------------------------------- */
 
@@ -330,6 +352,10 @@ function signOut(message, isError = false) {
   state.serverToken = null;
   state.baseUrl = null;
   state.movies = null;
+  filters.shortOnly = false;
+  filters.comedyOnly = false;
+  els.filterRuntime.setAttribute('aria-pressed', 'false');
+  els.filterComedy.setAttribute('aria-pressed', 'false');
   els.result.hidden = true;
   els.pickBtn.disabled = true;
   els.pickBtn.textContent = 'Pick a film';
@@ -368,13 +394,32 @@ async function enterApp() {
 
   state.moviesLoadedAt = Date.now();
   clearStatus();
-  setLibraryInfo(state.movies.length);
+  updateLibraryInfo();
   els.pickBtn.disabled = false;
   await pickMovie(); // pick straight away — no need to press the button first
 }
 
-function setLibraryInfo(n) {
-  els.libraryInfo.textContent = `${n} ${n === 1 ? 'film' : 'films'} ·`;
+function updateLibraryInfo() {
+  if (!state.movies) {
+    els.libraryInfo.textContent = '';
+    return;
+  }
+  const total = state.movies.length;
+  if (filters.shortOnly || filters.comedyOnly) {
+    els.libraryInfo.textContent = `${filteredMovies().length} of ${total} films ·`;
+  } else {
+    els.libraryInfo.textContent = `${total} ${total === 1 ? 'film' : 'films'} ·`;
+  }
+}
+
+function toggleFilter(btn, key) {
+  filters[key] = !filters[key];
+  btn.setAttribute('aria-pressed', String(filters[key]));
+  updateLibraryInfo();
+  // Clear a stale "no matches" complaint once the filters allow picks again.
+  if (filteredMovies().length > 0 && els.status.textContent === NO_MATCH_MESSAGE) {
+    clearStatus();
+  }
 }
 
 let refreshingLibrary = false;
@@ -394,7 +439,7 @@ async function refreshLibrary() {
     if (movies.length > 0) {
       state.movies = movies;
       state.moviesLoadedAt = Date.now();
-      setLibraryInfo(movies.length);
+      updateLibraryInfo();
     }
   } catch (err) {
     if (err instanceof AuthError) {
@@ -406,12 +451,18 @@ async function refreshLibrary() {
 }
 
 async function pickMovie() {
-  const movies = state.movies;
-  if (!movies || movies.length === 0) {
+  if (!state.movies || state.movies.length === 0) {
     // The button reads "Try again" after a failed library load.
     enterApp();
     return;
   }
+
+  const movies = filteredMovies();
+  if (movies.length === 0) {
+    showStatus(NO_MATCH_MESSAGE, true);
+    return;
+  }
+  if (els.status.textContent === NO_MATCH_MESSAGE) clearStatus();
 
   els.pickBtn.disabled = true;
   const winner = movies[secureRandomIndex(movies.length)];
@@ -440,6 +491,12 @@ async function init() {
 
   els.signinBtn.addEventListener('click', startSignIn);
   els.pickBtn.addEventListener('click', pickMovie);
+  els.filterRuntime.addEventListener('click', () =>
+    toggleFilter(els.filterRuntime, 'shortOnly')
+  );
+  els.filterComedy.addEventListener('click', () =>
+    toggleFilter(els.filterComedy, 'comedyOnly')
+  );
   els.signoutLink.addEventListener('click', (e) => {
     e.preventDefault();
     signOut();
