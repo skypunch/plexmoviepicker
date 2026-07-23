@@ -59,6 +59,7 @@ const els = {
   pickBtn: document.getElementById('pick-btn'),
   filterRuntime: document.getElementById('filter-runtime'),
   filterComedy: document.getElementById('filter-comedy'),
+  filterHorror: document.getElementById('filter-horror'),
   libraryInfo: document.getElementById('library-info'),
   signoutLink: document.getElementById('signout-link'),
 };
@@ -66,7 +67,12 @@ const els = {
 const filters = {
   shortOnly: false, // 100 minutes and under
   comedyOnly: false,
+  horrorOnly: false,
 };
+
+function hasGenre(movie, tag) {
+  return (movie.Genre || []).some((g) => String(g.tag).toLowerCase() === tag);
+}
 
 function filteredMovies() {
   let list = state.movies || [];
@@ -74,9 +80,10 @@ function filteredMovies() {
     list = list.filter((m) => m.duration && m.duration <= MAX_SHORT_RUNTIME_MS);
   }
   if (filters.comedyOnly) {
-    list = list.filter((m) =>
-      (m.Genre || []).some((g) => String(g.tag).toLowerCase() === 'comedy')
-    );
+    list = list.filter((m) => hasGenre(m, 'comedy'));
+  }
+  if (filters.horrorOnly) {
+    list = list.filter((m) => hasGenre(m, 'horror'));
   }
   return list;
 }
@@ -354,8 +361,10 @@ function signOut(message, isError = false) {
   state.movies = null;
   filters.shortOnly = false;
   filters.comedyOnly = false;
+  filters.horrorOnly = false;
   els.filterRuntime.setAttribute('aria-pressed', 'false');
   els.filterComedy.setAttribute('aria-pressed', 'false');
+  els.filterHorror.setAttribute('aria-pressed', 'false');
   els.result.hidden = true;
   els.pickBtn.disabled = true;
   els.pickBtn.textContent = 'Pick a film';
@@ -405,7 +414,7 @@ function updateLibraryInfo() {
     return;
   }
   const total = state.movies.length;
-  if (filters.shortOnly || filters.comedyOnly) {
+  if (filters.shortOnly || filters.comedyOnly || filters.horrorOnly) {
     els.libraryInfo.textContent = `${filteredMovies().length} of ${total} films ·`;
   } else {
     els.libraryInfo.textContent = `${total} ${total === 1 ? 'film' : 'films'} ·`;
@@ -496,6 +505,9 @@ async function init() {
   );
   els.filterComedy.addEventListener('click', () =>
     toggleFilter(els.filterComedy, 'comedyOnly')
+  );
+  els.filterHorror.addEventListener('click', () =>
+    toggleFilter(els.filterHorror, 'horrorOnly')
   );
   els.signoutLink.addEventListener('click', (e) => {
     e.preventDefault();
